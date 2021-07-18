@@ -1,12 +1,18 @@
 const express = require("express");
 
 const placesRoutes = require("./routes/places-route");
+const HttpError = require("./models/http-error");
 
 const app = express();
 
 app.use(express.json());
 
 app.use("/api/places", placesRoutes);
+
+app.use((req, res, next) => {
+  const error = new HttpError("Could not find this route.", 404);
+  throw error;
+});
 
 app.use((error, req, res, next) => {
   if (res.headerSent) {
