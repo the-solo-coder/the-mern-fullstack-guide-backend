@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require("uuid"); //correct new version compared to the co
 
 const HttpError = require("../models/http-error");
 
-const DUMMY_PLACES = [
+let DUMMY_PLACES = [
   {
     id: "p1",
     title: "Empire State Building",
@@ -67,7 +67,7 @@ const updatePlace = (req, res, next) => {
   const placeId = req.params.pid;
 
   //create a copy of the previous place with the spread operator ...
-  const updatedPlace = {...DUMMY_PLACES.find((p) => p.id === placeId)};
+  const updatedPlace = { ...DUMMY_PLACES.find((p) => p.id === placeId) };
   //get the index of the place from the array to be used during update
   const placeIndex = DUMMY_PLACES.findIndex((p) => p.id === placeId);
 
@@ -81,7 +81,12 @@ const updatePlace = (req, res, next) => {
   res.status(200).json({ place: updatedPlace });
 };
 
-const deletePlace = (req, res, next) => {};
+const deletePlace = (req, res, next) => {
+  const placeId = req.params.pid;
+  DUMMY_PLACES = DUMMY_PLACES.filter((p) => p.id !== placeId);
+
+  res.status(200).json({ message: "Deleted place." });
+};
 
 exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
