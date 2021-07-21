@@ -4,6 +4,8 @@ const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
 const getCoordsForAddress = require("../util/location");
 
+const Place = require("../models/place");
+
 let DUMMY_PLACES = [
   {
     id: "p1",
@@ -64,16 +66,36 @@ const createPlace = async (req, res, next) => {
     return next(error);
   }
 
-  const createdPlace = {
-    id: uuidv4(),
+  // const createdPlace = {
+  //   id: uuidv4(),
+  //   title,
+  //   description,
+  //   location: coordinates,
+  //   address,
+  //   creator,
+  // };
+
+  const createdPlace = new Place({
     title,
     description,
+    image:
+      "https://cdn.vox-cdn.com/thumbor/JMqrPS2RmaDK6S5zaMuIw03I5Ns=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/18971698/151006_19_00_22_5DSR9489.jpg",
     location: coordinates,
     address,
     creator,
-  };
+  });
 
-  DUMMY_PLACES.push(createdPlace);
+  //DUMMY_PLACES.push(createdPlace);
+
+  try {
+    const result = await createdPlace.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating place failed, please try again.",
+      500
+    );
+    return next(error);
+  }
 
   res.status(201).json({ place: createdPlace });
 };
