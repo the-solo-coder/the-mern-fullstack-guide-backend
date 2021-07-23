@@ -5,23 +5,22 @@ const HttpError = require("../models/http-error");
 
 const User = require("../models/user");
 
-let DUMMY_USERS = [
-  {
-    id: "u1",
-    name: "Aderson",
-    email: "aderson@dnnhero.com",
-    password: "pxyz",
-  },
-  {
-    id: "u2",
-    name: "Eduardo",
-    email: "eduardo@luis.com",
-    password: "fhug",
-  },
-];
+const getUsers = async (req, res, next) => {
+  let users;
+  try {
+    users = await User.find({}, "-password").exec();
+  } catch (err) {
+    const error = new HttpError("Couldn't retrieve users!", 500);
+    return next(error);
+  }
 
-const getUsers = (req, res, next) => {
-  res.json({ users: DUMMY_USERS });
+  if (!users || users.length === 0) {
+    return next(new HttpError(`Could not find users!`, 404));
+  }
+
+  res.json({
+    users: users.map((user) => user.toObject({ getters: true })),
+  });
 };
 
 const signup = async (req, res, next) => {
