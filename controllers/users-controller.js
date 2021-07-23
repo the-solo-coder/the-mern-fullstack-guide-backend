@@ -66,14 +66,21 @@ const signup = async (req, res, next) => {
   res.status(201).json({ user: createdUser.toObject({ getters: true }) });
 };
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  //create a copy of the previous place with the spread operator ...
-  const user = DUMMY_USERS.find((u) => u.email === email);
+  let user;
+  try {
+    user = await User.findOne({ email: email });
+  } catch (err) {
+    const error = new HttpError("Couldn't retrieve user!", 500);
+    return next(error);
+  }
 
   if (!user || user.password !== password) {
-    throw new HttpError(`Could not validate user, or password is wrong!`, 404);
+    return next(
+      new HttpError(`Could not validate user, or password is wrong!`, 401)
+    );
   }
 
   res.json({ message: "User is logged in!" });
