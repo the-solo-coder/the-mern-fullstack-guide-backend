@@ -31,7 +31,7 @@ const signup = async (req, res, next) => {
     return next(new HttpError("Invalid inputs passed", 422));
   }
 
-  const { name, email, password, places } = req.body;
+  const { name, email, password } = req.body;
 
   let existingUser;
   try {
@@ -52,7 +52,7 @@ const signup = async (req, res, next) => {
     password,
     image:
       "https://cdn.vox-cdn.com/thumbor/JMqrPS2RmaDK6S5zaMuIw03I5Ns=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/18971698/151006_19_00_22_5DSR9489.jpg",
-    places,
+    places: []
   });
 
   try {
