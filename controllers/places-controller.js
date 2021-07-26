@@ -100,12 +100,11 @@ const createPlace = async (req, res, next) => {
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
-    await createdPlace.save({session: sess});
+    await createdPlace.save({ session: sess });
 
     user.places.push(createdPlace);
-    await user.save({session: sess});
+    await user.save({ session: sess });
     await sess.commitTransaction();
-    //sess.closeTransaction();
   } catch (err) {
     const error = new HttpError(
       "Creating place failed, please try again.",
@@ -158,17 +157,29 @@ const deletePlace = async (req, res, next) => {
 
   let place;
   try {
-    place = await Place.findById(placeId);
+    console.log(placeId);
+    place = await Place.findById(placeId).populate("creator");
   } catch (err) {
-    const error = new HttpError("Couldn't retrieve place!", 500);
+    const error = new HttpError("Couldn't retrieve place!" + err, 500);
+    return next(error);
+  }
+
+  if (!place) {
+    const error = new HttpError("Could not find place!", 404);
     return next(error);
   }
 
   try {
-    await place.remove();
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await place.remove({ session: sess });
+
+    place.creator.places.pull(place);
+    await place.creator.save({ session: sess });
+    await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(
-      "Deleting place failed, please try again.",
+      "Deleting place failed, please try again." + err,
       500
     );
     return next(error);
