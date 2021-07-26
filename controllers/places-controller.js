@@ -32,10 +32,8 @@ const getPlaceById = async (req, res, next) => {
 const getPlacesByUserId = async (req, res, next) => {
   const userId = req.params.uid;
 
-  //let places;
   let userWithPlaces;
   try {
-    //places = await Place.find({ creator: userId }).exec();
     userWithPlaces = await User.findById(userId).populate("places");
   } catch (err) {
     const error = new HttpError("Couldn't retrieve places!" + err, 500);
@@ -127,8 +125,6 @@ const updatePlace = async (req, res, next) => {
 
   const { title, description } = req.body;
   const placeId = req.params.pid;
-
-  //create a copy of the previous place with the spread operator ...
 
   let place;
   try {

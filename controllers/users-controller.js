@@ -1,4 +1,3 @@
-const { v4: uuidv4 } = require("uuid"); //correct new version compared to the course
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
