@@ -29,7 +29,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect("mongodb+srv://mern-user:HRSNcgFfu2zK6NQ@cluster0.7qgoz.mongodb.net/places?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true})
+  .connect("mongodb+srv://mern-user:HRSNcgFfu2zK6NQ@cluster0.7qgoz.mongodb.net/mern?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => {
     app.listen(5000);
   })
