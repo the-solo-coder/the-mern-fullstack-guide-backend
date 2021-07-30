@@ -51,7 +51,7 @@ const signup = async (req, res, next) => {
     password,
     image:
       "https://cdn.vox-cdn.com/thumbor/JMqrPS2RmaDK6S5zaMuIw03I5Ns=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/18971698/151006_19_00_22_5DSR9489.jpg",
-    places: []
+    places: [],
   });
 
   try {
@@ -81,7 +81,10 @@ const login = async (req, res, next) => {
     );
   }
 
-  res.json({ message: "User is logged in!" });
+  res.json({
+    message: "User is logged in!",
+    user: user.toObject({ getters: true }),
+  });
 };
 
 exports.getUsers = getUsers;
