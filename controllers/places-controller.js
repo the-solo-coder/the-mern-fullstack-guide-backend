@@ -123,7 +123,7 @@ const updatePlace = async (req, res, next) => {
     return next(new HttpError("Invalid inputs passed", 422));
   }
 
-  const { title, description } = req.body;
+  const { title, description, address } = req.body;
   const placeId = req.params.pid;
 
   let place;
@@ -136,6 +136,7 @@ const updatePlace = async (req, res, next) => {
 
   place.title = title;
   place.description = description;
+  place.address = address;
 
   try {
     const result = await place.save();
