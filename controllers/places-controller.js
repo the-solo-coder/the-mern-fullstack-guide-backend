@@ -1,4 +1,6 @@
 const { v4: uuidv4 } = require("uuid"); //correct new version compared to the course
+const fs = require("fs");
+
 const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 
@@ -50,7 +52,9 @@ const getPlacesByUserId = async (req, res, next) => {
   }
 
   res.json({
-    places: userWithPlaces.places.map((place) => place.toObject({ getters: true })),
+    places: userWithPlaces.places.map((place) =>
+      place.toObject({ getters: true })
+    ),
   });
 };
 
@@ -155,7 +159,6 @@ const deletePlace = async (req, res, next) => {
 
   let place;
   try {
-    console.log(placeId);
     place = await Place.findById(placeId).populate("creator");
   } catch (err) {
     const error = new HttpError("Couldn't retrieve place!" + err, 500);
@@ -166,6 +169,9 @@ const deletePlace = async (req, res, next) => {
     const error = new HttpError("Could not find place!", 404);
     return next(error);
   }
+
+  const imagePath = place.image;
+  console.log(imagePath);
 
   try {
     const sess = await mongoose.startSession();
@@ -182,6 +188,11 @@ const deletePlace = async (req, res, next) => {
     );
     return next(error);
   }
+
+ 
+  fs.unlink(imagePath, (err) => {
+    console.log(err);
+  });
 
   res.status(200).json({ message: "Deleted place." });
 };
