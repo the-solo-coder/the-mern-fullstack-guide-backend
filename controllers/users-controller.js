@@ -89,7 +89,25 @@ const login = async (req, res, next) => {
     return next(error);
   }
 
-  if (!user || user.password !== password) {
+  if (!user) {
+    return next(
+      new HttpError(`Could not validate user, or password is wrong!`, 401)
+    );
+  }
+
+  let isValidPassword = false;
+
+  try {
+    isValidPassword = await bcrypt.compare(password, user.password);
+  } catch (err) {
+    const error = new HttpError(
+      "Could not validate user, please try again",
+      500
+    );
+    return next(error);
+  }
+
+  if (!isValidPassword) {
     return next(
       new HttpError(`Could not validate user, or password is wrong!`, 401)
     );
