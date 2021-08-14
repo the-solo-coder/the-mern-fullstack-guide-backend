@@ -128,12 +128,19 @@ const updatePlace = async (req, res, next) => {
 
   const { title, description, address } = req.body;
   const placeId = req.params.pid;
+  const userId = req.userData.userId;
 
   let place;
   try {
     place = await Place.findById(placeId);
+
   } catch (err) {
     const error = new HttpError("Couldn't retrieve place!", 500);
+    return next(error);
+  }
+
+  if (userId !== place.creator.toString()) {
+    const error = new HttpError("You are not allowed to edit this place!", 401);
     return next(error);
   }
 
@@ -189,7 +196,6 @@ const deletePlace = async (req, res, next) => {
     return next(error);
   }
 
- 
   fs.unlink(imagePath, (err) => {
     console.log(err);
   });
