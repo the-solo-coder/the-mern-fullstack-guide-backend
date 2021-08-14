@@ -110,7 +110,7 @@ const login = async (req, res, next) => {
 
   if (!user) {
     return next(
-      new HttpError(`Could not validate user, or password is wrong!`, 401)
+      new HttpError(`Could not validate user, or password is wrong!`, 403)
     );
   }
 
@@ -128,7 +128,7 @@ const login = async (req, res, next) => {
 
   if (!isValidPassword) {
     return next(
-      new HttpError(`Could not validate user, or password is wrong!`, 401)
+      new HttpError(`Could not validate user, or password is wrong!`, 403)
     );
   }
 

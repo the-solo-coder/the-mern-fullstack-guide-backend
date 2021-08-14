@@ -133,7 +133,6 @@ const updatePlace = async (req, res, next) => {
   let place;
   try {
     place = await Place.findById(placeId);
-
   } catch (err) {
     const error = new HttpError("Couldn't retrieve place!", 500);
     return next(error);
@@ -163,6 +162,7 @@ const updatePlace = async (req, res, next) => {
 
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
+  const userId = req.userData.userId;
 
   let place;
   try {
@@ -174,6 +174,14 @@ const deletePlace = async (req, res, next) => {
 
   if (!place) {
     const error = new HttpError("Could not find place!", 404);
+    return next(error);
+  }
+
+  if (place.creator.id !== userId) {
+    const error = new HttpError(
+      "You are not allowed to delete this place!",
+      401
+    );
     return next(error);
   }
 
