@@ -72,7 +72,7 @@ const signup = async (req, res, next) => {
   try {
     await createdUser.save();
   } catch (err) {
-    const error = new HttpError("Creating user failed, please try again.", 500);
+    const error = new HttpError("Creating user failed, please try again."+err, 500);
     return next(error);
   }
 
@@ -82,7 +82,7 @@ const signup = async (req, res, next) => {
     //up to me to choose which data should be encoded
     token = jwt.sign(
       { userId: createdUser.id, email: createdUser.email },
-      "supersecret_dont_share",
+      process.env.JWT_KEY,
       {
         expiresIn: "1h",
       }
@@ -138,7 +138,7 @@ const login = async (req, res, next) => {
     //up to me to choose which data should be encoded
     token = jwt.sign(
       { userId: user.id, email: user.email },
-      "supersecret_dont_share",
+      process.env.JWT_KEY,
       {
         expiresIn: "1h",
       }
